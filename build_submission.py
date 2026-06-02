@@ -157,7 +157,10 @@ cat_m = CatBoostRegressor(iterations=N, learning_rate=0.03, depth=7, l2_leaf_reg
 cat_m.fit(Xfull, yfull)
 cat_pred = np.clip(cat_m.predict(Xte), 0, 1)
 
-final = np.clip(0.6*lgb_pred + 0.25*xgb_pred + 0.15*cat_pred, 0, 1)
+# ensemble + mild variance calibration (GBMs under-disperse; widen spread ~5%)
+ens = 0.6*lgb_pred + 0.25*xgb_pred + 0.15*cat_pred
+mu = ens.mean()
+final = np.clip(mu + 1.05*(ens - mu), 0, 1)
 
 # ---------------- SAVE ----------------
 sub = pd.DataFrame({'Index': test['Index'].values, 'demand': final})
