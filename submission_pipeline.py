@@ -36,8 +36,8 @@ print("=" * 70)
 print("\n[1/8] Loading data...")
 t0 = time.time()
 
-train = pd.read_csv('train_real.csv')
-test = pd.read_csv('test_real.csv')
+train = pd.read_csv('train.csv')
+test = pd.read_csv('test.csv')
 
 print(f"  train.csv: {train.shape[0]:,} rows (day 48: {len(train[train.day==48])}, day 49: {len(train[train.day==49])})")
 print(f"  test.csv:  {test.shape[0]:,} rows (day 49, timestamps 2:15-13:45)")
