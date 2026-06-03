@@ -1,0 +1,38 @@
+import numpy as np, pandas as pd
+pd.set_option('display.width', 200)
+DATA='_work/dataset/'
+tr = pd.read_csv(DATA+'train.csv')
+te = pd.read_csv(DATA+'test.csv')
+print("TRAIN", tr.shape, "TEST", te.shape)
+print("\n--- demand stats ---")
+print(tr['demand'].describe())
+print("min", tr['demand'].min(), "max", tr['demand'].max())
+print("frac demand>1:", (tr['demand']>1).mean(), " frac ==0:", (tr['demand']==0).mean())
+print("\n--- day/timestamp coverage ---")
+def parse_ts(s):
+    h,m = s.split(':'); return int(h)*4+int(m)//15
+tr['tb']=tr['timestamp'].map(parse_ts); te['tb']=te['timestamp'].map(parse_ts)
+print("train day counts:\n", tr.groupby('day')['tb'].agg(['min','max','nunique','count']))
+print("test day counts:\n", te.groupby('day')['tb'].agg(['min','max','nunique','count']))
+print("train day49 buckets:", sorted(tr[tr.day==49]['tb'].unique()))
+print("test day49 buckets:", sorted(te['tb'].unique()))
+print("\n--- geohash overlap ---")
+gtr=set(tr['geohash'].unique()); gte=set(te['geohash'].unique())
+print("train geohashes:", len(gtr), "test geohashes:", len(gte))
+print("test geos not in train:", len(gte-gtr))
+print("\n--- rows per geohash ---")
+print("train rows/geo describe:\n", tr.groupby('geohash').size().describe())
+print("test rows/geo describe:\n", te.groupby('geohash').size().describe())
+g48=tr[tr.day==48].groupby('geohash')['tb'].nunique()
+print("\ngeohashes with 96 buckets on day48:", (g48==96).sum(), "of", len(g48))
+print("day48 buckets per geo describe:\n", g48.describe())
+print("\n--- static cols nunique per geohash ---")
+for c in ['RoadType','NumberofLanes','LargeVehicles','Landmarks']:
+    nun = tr.groupby('geohash')[c].nunique(dropna=False)
+    print(f"  {c}: max nunique per geo = {nun.max()}, frac geos with >1 = {(nun>1).mean():.3f}")
+print("\nWeather nunique per geo:", tr.groupby('geohash')['Weather'].nunique(dropna=False).agg(['mean','max']).to_dict())
+print("\n--- BASELINE: same-time-prev-day (day48) availability for test ---")
+day48 = tr[tr.day==48].set_index(['geohash','tb'])['demand']
+te2 = te.copy()
+te2['pred48'] = te2.apply(lambda r: day48.get((r['geohash'], r['tb']), np.nan), axis=1)
+print("test rows with a day48 same-tb value:", te2['pred48'].notna().mean())

@@ -1,0 +1,16 @@
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Local full-data copies (graders use the LFS-tracked train.csv/test.csv)
+*_real.csv
+_work/dataset/
+
+# Training data is off-limits for the model (see approach.md section 2)
+training.csv
+training_real.csv
+
+# Tool scratch output
+catboost_info/
+semantic-review/
