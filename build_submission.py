@@ -91,7 +91,7 @@ for (g, b), v in bucket_demand.items():
     grid[idx[g], b] = v
 base_level = np.nan_to_num(np.nanmean(grid, axis=1), nan=glob_mean)
 centred = np.where(np.isnan(grid), base_level[:, None], grid) - base_level[:, None]
-svd = TruncatedSVD(n_components=16, random_state=SEED)
+svd = TruncatedSVD(n_components=8, random_state=SEED)
 smooth_grid = svd.inverse_transform(svd.fit_transform(centred)) + base_level[:, None]
 
 
