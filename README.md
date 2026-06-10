@@ -109,7 +109,7 @@ submission.csv
 | Day48 Features | 89.84 |
 | Residual Learning | 90.97 |
 | Full Ensemble | 91.27 |
-| Final Model | **91.56** |
+| Final Model | **93.22** |
 
 ---
 
