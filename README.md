@@ -4,7 +4,7 @@
 
 Traffic demand forecasting solution for the Flipkart GridLock 2.0 challenge.
 
-**Final Offline Score:** 91.56
+**Final Offline Score:** 93.22
 
 ---
 
