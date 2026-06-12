@@ -124,7 +124,7 @@ No external data is used during training.
 
 ---
 
-## Run
+## Run Commands
 
 ```bash
 pip install numpy pandas scikit-learn lightgbm xgboost catboost pygeohash
